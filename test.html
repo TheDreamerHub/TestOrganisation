@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organisation Mariage Muriel & Valentin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Energetic & Playful -->
+    <!-- Application Structure Plan: J'ai opté pour une structure à onglets (Vue d'ensemble, Programme, Logistique, Budget) pour segmenter l'information logiquement. Cette approche évite un long défilement et permet aux utilisateurs de trouver rapidement l'information précise dont ils ont besoin (par ex. juste le budget ou l'horaire d'un train). La "Vue d'ensemble" offre un résumé rapide, le "Programme" un déroulé chronologique, la "Logistique" regroupe les détails de transport et d'hébergement, et le "Budget" isole les informations financières avec des graphiques pour une compréhension immédiate. C'est plus intuitif qu'un document linéaire. -->
+    <!-- Visualization & Content Choices: 
+        - Participants (Vue d'ensemble): Goal: Organize. Method: Cartes HTML stylées avec icônes Unicode pour présenter clairement chaque membre.
+        - Timeline (Programme): Goal: Organize. Method: Timeline verticale en HTML/CSS (Flexbox) pour montrer le déroulement des événements. Justification: Clair, chronologique, et évite SVG/Mermaid.
+        - Répartition Budget (Budget): Goal: Compare. Viz: Donut Chart (Chart.js). Justification: Idéal pour montrer la part de chaque poste de dépense (logement vs voiture) dans le total.
+        - Coût par groupe (Budget): Goal: Compare. Viz: Bar Chart (Chart.js). Justification: Compare efficacement la contribution financière de chaque groupe/personne.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-active {
+            border-color: #4f46e5; /* indigo-600 */
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #4b5563; /* gray-600 */
+        }
+        .hidden-section {
+            display: none;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-600">Mariage de Muriel & Valentin</h1>
+            <p class="text-xl text-gray-600 mt-2">Notre organisation pour un week-end inoubliable !</p>
+        </header>
+
+        <main>
+            <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+                
+                <nav class="border-b border-gray-200 mb-6">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tab-nav">
+                        <li class="mr-2">
+                            <button class="inline-block p-4 border-b-2 rounded-t-lg tab-active" data-tab="overview">Vue d'ensemble</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive" data-tab="schedule">Programme</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive" data-tab="logistics">Logistique</button>
+                        </li>
+                        <li>
+                            <button class="inline-block p-4 border-b-2 rounded-t-lg tab-inactive" data-tab="budget">Budget</button>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div id="tab-content">
+                    
+                    <section id="overview" class="">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-indigo-50 rounded-xl p-6">
+                                <h2 class="text-2xl font-bold mb-4 text-indigo-800">Les Participants (5)</h2>
+                                <ul class="space-y-3 text-gray-700">
+                                    <li class="flex items-center"><span class="text-xl mr-3">😎</span> Moi</li>
+                                    <li class="flex items-center"><span class="text-xl mr-3">🥰</span> Stella</li>
+                                    <li class="flex items-center"><span class="text-xl mr-3">🤗</span> Maman</li>
+                                    <li class="flex items-center"><span class="text-xl mr-3">💃</span> Josiane</li>
+                                    <li class="flex items-center"><span class="text-xl mr-3">🤩</span> Karine</li>
+                                </ul>
+                            </div>
+                            <div class="bg-indigo-50 rounded-xl p-6">
+                                <h2 class="text-2xl font-bold mb-4 text-indigo-800">Dates Clés</h2>
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="font-semibold text-lg">Départ du groupe</p>
+                                        <p class="text-gray-600">Mardi 29 Juillet 2025 (matinée)</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-lg">Retour Team 1</p>
+                                        <p class="text-gray-600">Jeudi 31 Juillet 2025 (soirée)</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-lg">Fin du séjour</p>
+                                        <p class="text-gray-600">Vendredi 1er Août 2025 (matinée)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="schedule" class="hidden-section">
+                        <div class="relative pl-6 border-l-2 border-indigo-200">
+                            
+                            <div class="mb-8">
+                                <div class="absolute w-6 h-6 bg-indigo-600 rounded-full -left-3 border-4 border-white"></div>
+                                <h3 class="text-xl font-bold text-indigo-600 mb-1">Mardi 29 Juillet</h3>
+                                <p class="text-sm text-gray-500 mb-3">Arrivée & Soirée Traditionnelle</p>
+                                <div class="space-y-2 text-gray-700">
+                                    <p><span class="font-semibold">13:59 :</span> Arrivée de la Team 1 à Montélimar</p>
+                                    <p><span class="font-semibold">14:00 :</span> Récupération de la voiture de location</p>
+                                    <p><span class="font-semibold">16:00 :</span> Check-in à l'hébergement</p>
+                                    <p><span class="font-semibold">18:00 :</span> Arrivée à la Maison Claudie</p>
+                                    <p><span class="font-semibold">19:00 :</span> Début de la soirée traditionnelle</p>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <div class="absolute w-6 h-6 bg-indigo-600 rounded-full -left-3 border-4 border-white"></div>
+                                <h3 class="text-xl font-bold text-indigo-600 mb-1">Mercredi 30 Juillet</h3>
+                                <p class="text-sm text-gray-500 mb-3">Jour J : Cérémonie & Fête</p>
+                                <div class="space-y-2 text-gray-700">
+                                    <p><span class="font-semibold">16:00 :</span> Messe à la Collégiale de Grignan</p>
+                                    <p><span class="font-semibold">Après :</span> Cocktail & soirée à la Maison Claudie</p>
+                                </div>
+                            </div>
+
+                             <div class="mb-8">
+                                <div class="absolute w-6 h-6 bg-indigo-600 rounded-full -left-3 border-4 border-white"></div>
+                                <h3 class="text-xl font-bold text-indigo-600 mb-1">Jeudi 31 Juillet</h3>
+                                <p class="text-sm text-gray-500 mb-3">Brunch & Retour Team 1</p>
+                                <div class="space-y-2 text-gray-700">
+                                    <p><span class="font-semibold">10:30 - 16:00 :</span> Brunch convivial au domaine</p>
+                                    <p><span class="font-semibold">18:00 :</span> Retour de la voiture à Europcar</p>
+                                    <p><span class="font-semibold">18:48 :</span> Départ du train retour de la Team 1</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="absolute w-6 h-6 bg-indigo-600 rounded-full -left-3 border-4 border-white"></div>
+                                <h3 class="text-xl font-bold text-indigo-600 mb-1">Vendredi 1er Août</h3>
+                                <p class="text-sm text-gray-500 mb-3">Départ</p>
+                                <div class="space-y-2 text-gray-700">
+                                     <p><span class="font-semibold">11:00 :</span> Check-out de l'hébergement</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="logistics" class="hidden-section">
+                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <h2 class="text-2xl font-bold mb-4 text-indigo-800">🚆 Transport en Train</h2>
+                                <div class="space-y-4">
+                                    <div class="bg-gray-100 rounded-lg p-4">
+                                        <h3 class="font-bold text-lg">Team 1 : Moi & Stella</h3>
+                                        <p class="text-sm text-gray-600">Paris (09:56) → Lyon (11:52) → Montélimar (13:59)</p>
+                                    </div>
+                                    <div class="bg-gray-100 rounded-lg p-4">
+                                        <h3 class="font-bold text-lg">Team 2 : Karine & Maman</h3>
+                                        <p class="text-sm text-gray-600">Trajet à organiser</p>
+                                    </div>
+                                    <div class="bg-gray-100 rounded-lg p-4">
+                                        <h3 class="font-bold text-lg">Team 3 : Josiane</h3>
+                                        <p class="text-sm text-gray-600">Trajet à organiser</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <div>
+                                    <h2 class="text-2xl font-bold mb-4 text-indigo-800">🚗 Voiture sur Place</h2>
+                                    <div class="bg-gray-100 rounded-lg p-4">
+                                        <p><span class="font-semibold">Loueur :</span> Europcar Montélimar</p>
+                                        <p><span class="font-semibold">Prise en charge :</span> Mar. 29/07 à 14:00</p>
+                                        <p><span class="font-semibold">Restitution :</span> Jeu. 31/07 à 18:00</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl font-bold mb-4 text-indigo-800">🏠 Hébergement</h2>
+                                    <div class="bg-gray-100 rounded-lg p-4">
+                                        <h3 class="font-bold text-lg">Myzenplace - Duplex 100m2</h3>
+                                        <p class="text-sm text-gray-600">53 Rue Pierre Julien, 26200 Montélimar</p>
+                                        <p class="text-sm text-gray-600 mt-2"><span class="font-semibold">Check-in :</span> Mar. 29/07 à 16:00</p>
+                                        <p class="text-sm text-gray-600"><span class="font-semibold">Check-out :</span> Ven. 01/08 à 11:00</p>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+                    </section>
+
+                    <section id="budget" class="hidden-section">
+                        <div class="text-center mb-6">
+                            <p class="text-lg text-gray-600">Budget Total du Séjour</p>
+                            <p class="text-5xl font-bold text-indigo-600">719,88 €</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-xl font-bold text-center mb-2">Répartition des Dépenses</h3>
+                                <div class="chart-container">
+                                    <canvas id="expensesChart"></canvas>
+                                </div>
+                            </div>
+                             <div>
+                                <h3 class="text-xl font-bold text-center mb-2">Coût par Groupe</h3>
+                                <div class="chart-container" style="max-width: 500px; height: 350px;">
+                                    <canvas id="costPerGroupChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('[data-tab]');
+        const tabContents = document.querySelectorAll('#tab-content section');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-tab');
+
+                tabs.forEach(t => {
+                    t.classList.remove('tab-active');
+                    t.classList.add('tab-inactive');
+                });
+
+                tab.classList.add('tab-active');
+                tab.classList.remove('tab-inactive');
+
+                tabContents.forEach(content => {
+                    if (content.id === target) {
+                        content.classList.remove('hidden-section');
+                    } else {
+                        content.classList.add('hidden-section');
+                    }
+                });
+            });
+        });
+
+        const initCharts = () => {
+            const chartTooltipOptions = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const expensesCtx = document.getElementById('expensesChart').getContext('2d');
+            new Chart(expensesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hébergement', 'Voiture'],
+                    datasets: [{
+                        label: 'Répartition des dépenses',
+                        data: [442.88, 277],
+                        backgroundColor: [
+                            '#818cf8', // indigo-400
+                            '#a78bfa', // violet-400
+                        ],
+                        borderColor: '#f8fafc',
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    ...chartTooltipOptions,
+                    plugins: {
+                        ...chartTooltipOptions.plugins,
+                        legend: {
+                            position: 'bottom',
+                        },
+                    }
+                }
+            });
+
+            const costPerGroupCtx = document.getElementById('costPerGroupChart').getContext('2d');
+            new Chart(costPerGroupCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Moi & Stella', 'Josiane', 'Karine'],
+                    datasets: [{
+                        label: 'Coût total en €',
+                        data: [
+                            (221.44 + 138.50), // Moi & Stella
+                            (110.72 + 69.25),  // Josiane
+                            (110.72 + 69.25)   // Karine
+                        ],
+                        backgroundColor: [
+                            '#818cf8',
+                            '#a78bfa',
+                            '#c4b5fd',
+                        ],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                     ...chartTooltipOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb' // gray-200
+                            }
+                        },
+                        x: {
+                             grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                         ...chartTooltipOptions.plugins,
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        };
+        
+        document.addEventListener('DOMContentLoaded', initCharts);
+
+    </script>
+</body>
+</html>
